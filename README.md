@@ -1,4 +1,0 @@
-java
-====
-
-java project repository
