@@ -1,0 +1,25 @@
+# DB 
+url = jdbc:mysql://192.168.88.201:3306/car
+user = root
+password = 123
+driver = com.mysql.jdbc.Driver
+# 分类器名称
+category=food
+# 单分类(binary)/多分类(multi)
+type=binary
+# 多分类的一级类别编号
+#multi_ids=7,8,9,10,11
+#multi_ids=AA,AB,AC,AD,AE,AF
+# 操作-训练
+train=true
+train_path=E:/collection1/train
+#train_path=D:/分类/20120628/train
+#train_path=D:/分类/A
+#train_path=D:/分类/20120420.16.56
+
+# 操作-测试
+eval=true
+eval_path=E:/collection1/eval
+#eval_path=D:/分类/20120628/eval
+#eval_path=D:/分类/A
+#eval_path=D:/分类/20120420.16.56
