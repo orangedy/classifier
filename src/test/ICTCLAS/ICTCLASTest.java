@@ -12,7 +12,7 @@ public class ICTCLASTest {
 				System.out.println("init fail");
 				return;
 			}
-			testSpliter.ICTCLAS_SetPOSmap(3);
+			testSpliter.ICTCLAS_SetPOSmap(0);
 			byte[] bOutput = testSpliter.ICTCLAS_ParagraphProcess(sInput.getBytes("UTF-8"), 3, 1);
 			System.out.println(bOutput.length);
 			String sOutput = new String(bOutput, "UTF-8");
