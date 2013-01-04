@@ -5,7 +5,7 @@ import ICTCLAS.I3S.AC.ICTCLAS50;
 public class ICTCLASTest {
 	public static void main(String[] args) {
 		try{
-			String sInput = "中科院分词器";
+			String sInput = "我们都是中国人";
 			ICTCLAS50 testSpliter = new ICTCLAS50();
 			String argu = ".";
 			if(testSpliter.ICTCLAS_Init(argu.getBytes("GB2312")) == false){
