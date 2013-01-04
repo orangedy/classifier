@@ -31,6 +31,10 @@ public class ICTCLASTokenizer implements ITokenizer {
 		}
 	}
 	
+	/**
+	 * 设置词性集
+	 * @param posType
+	 */
 	public void setPosType(int posType){
 		tokenizer.ICTCLAS_SetPOSmap(posType);
 	}
@@ -38,7 +42,7 @@ public class ICTCLASTokenizer implements ITokenizer {
 	@Override
 	public String[] tokenize(String sinput, String encoding) {
 		
-		if(sinput != null || sinput.length() != 0){
+		if(sinput != null && sinput.length() != 0){
 			return ictclasTokenizer(sinput, encoding);
 		}else{
 			return new String[0];
@@ -47,7 +51,7 @@ public class ICTCLASTokenizer implements ITokenizer {
 
 	@Override
 	public String[] tokenize(String sinput) {
-		if(sinput != null || sinput.length() != 0){
+		if(sinput != null && sinput.length() != 0){
 			return ictclasTokenizer(sinput, "GB2312");
 		}else{
 			return new String[0];
@@ -72,7 +76,7 @@ public class ICTCLASTokenizer implements ITokenizer {
 	// for test
 	public static void main(String[] args) {
 		ICTCLASTokenizer test = new ICTCLASTokenizer();
-		String sInput = "今天下雪了";
+		String sInput = "今天下雪了，江南styleaa abc";
 		String[] results = test.tokenize(sInput, "GB2312");
 		for(String result : results){
 			System.out.println(result);
