@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import common.tokenizer.ICTCLASTokenizer;
 import common.tokenizer.ITokenizer;
 
 import libsvm.svm_node;
@@ -42,7 +43,7 @@ public class Document {
 	/**
 	 * 所使用的分词器，可以通过spring配置不同的分词器
 	 */
-	private ITokenizer tokenizer;
+	private ITokenizer tokenizer = new ICTCLASTokenizer();
 
 	public ITokenizer getTokenizer() {
 		return tokenizer;
@@ -91,7 +92,6 @@ public class Document {
 	}
 
 	public svm_node[] getSvmNodeArray() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

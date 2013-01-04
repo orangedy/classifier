@@ -15,7 +15,7 @@ public class DataFromFile {
 	private File trainDataDir;
 	
 	//默认训练数据目录
-	private static String defaultPath = "./sample/car";
+	private static String defaultPath = "./sample";
 
 	private String[] category;
 	

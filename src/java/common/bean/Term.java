@@ -62,4 +62,18 @@ public class Term {
 	public void addFrequency(){
 		this.frequency++;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if(obj != null && obj instanceof Term){
+			Term objTemp = (Term) obj;
+			if(objTemp.getTerm().equals(this.getTerm())){
+				return true;
+			}
+		}
+		return false;
+	}
 }
