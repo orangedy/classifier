@@ -1,8 +1,10 @@
 package common.bean;
 
+import java.util.Comparator;
+
 import org.apache.log4j.Logger;
 
-public class Term {
+public class Term{
 
 	private Logger log = Logger.getLogger(Term.class);
 	
@@ -75,5 +77,10 @@ public class Term {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getTerm().hashCode();
 	}
 }
