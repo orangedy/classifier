@@ -119,11 +119,11 @@ public class CHISelector implements ITermSelector{
 		int length = termMap.size();
 		double[] values = new double[length];
 		int position = 0;
-		Collections.sort(termMap, new Comparator<Map.Entry<Term, Double>>() {   
-            public int compare(Map.Entry<Term, Double> o1, Map.Entry<Term, Double> o2) {   
+		Collections.sort(new ArrayList<Map.Entry<Term, Double>>(termMap.entrySet()), new Comparator<Map.Entry<Term, Double>>() {   
+            public int compare(Map.Entry<Term, Double> o1, Map.Entry<Term, Double> o2) {
                 return (int) (o2.getValue() - o1.getValue());
             }
-		}
+		});
 		return null;
 	}
 
