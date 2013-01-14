@@ -29,6 +29,7 @@ public class Term{
 	}
 
 	public void setFrequency(int frequency) {
+		
 		this.frequency = frequency;
 	}
 

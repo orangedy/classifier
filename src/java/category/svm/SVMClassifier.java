@@ -2,9 +2,11 @@ package category.svm;
 
 import org.apache.log4j.Logger;
 
+import category.AbstractClassifier;
+
 import common.util.ConfigHelper;
 
-public class SVMClassifierMain {
+public class SVMClassifier extends AbstractClassifier {
 
 	private static final Logger log = Logger.getLogger("SVMClassifierMain.class");
 	

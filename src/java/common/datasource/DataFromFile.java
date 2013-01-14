@@ -1,6 +1,8 @@
 package common.datasource;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 从文件获取输入数据，文件目录为train和eval
@@ -10,15 +12,23 @@ import java.io.File;
  * @author orangedy
  *
  */
-public class DataFromFile {
+public class DataFromFile implements DataSource {
 
 	private File trainDataDir;
 	
 	//默认训练数据目录
 	private static String defaultPath = "./sample";
 
-	private String[] category;
+	private String[] categorys;
 	
+	public String[] getCategorys() {
+		return categorys;
+	}
+
+	public void setCategorys(String[] categorys) {
+		this.categorys = categorys;
+	}
+
 	public DataFromFile(String fileDir) {
 		String dir;
 		if(fileDir == null || fileDir.length() == 0){
@@ -30,7 +40,15 @@ public class DataFromFile {
 		if(!trainDataDir.isDirectory()){
 			throw new IllegalArgumentException("训练语料库搜索失败！ [" + fileDir + "]");
 		}
-		category = trainDataDir.list();
+		categorys = trainDataDir.list();
+		List<String> list = new ArrayList<String>();
+		for(String category : this.categorys){
+			File classDir = new File(trainDataDir.getPath() + File.separator + category);
+			if(classDir.isDirectory()){
+				list.add(category);
+			}
+		}
+		categorys = (String[]) list.toArray();
 	}
 	
 	/**
@@ -38,7 +56,7 @@ public class DataFromFile {
 	 * @param category 类别名
 	 * @return
 	 */
-	public String[] getFilesDirByCategory(String category){
+	public String[] getContentDirByCategory(String category){
 		if (category == null || category.equals(""))
 			return trainDataDir.list();
 		File classDir = new File(trainDataDir.getPath() + File.separator + category);
@@ -50,5 +68,4 @@ public class DataFromFile {
 		}
 		return ret;
 	}
-	
 }

@@ -2,8 +2,8 @@ package common.feature;
 
 import java.util.List;
 
-import category.CategoryBean;
 
+import common.bean.CategoryBean;
 import common.bean.Document;
 import common.bean.Term;
 

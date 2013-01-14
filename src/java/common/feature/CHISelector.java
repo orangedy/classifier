@@ -12,8 +12,8 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import category.CategoryBean;
 
+import common.bean.CategoryBean;
 import common.bean.Document;
 import common.bean.Term;
 
@@ -24,7 +24,7 @@ public class CHISelector implements ITermSelector{
 	/**
 	 * 选择特征词的数量，如果总数少于此数，则返回特征数量为大于minCHIValue的数量
 	 */
-	private int selectNum;
+	private int selectNum = 2000;
 	
 	public int getSelectNum() {
 		return selectNum;
@@ -35,7 +35,7 @@ public class CHISelector implements ITermSelector{
 	}
 	
 	/**
-	 * 最小的开方检验的值，当开方检验的值为0.455时，相关性的可能性是50%
+	 * 最小的开方检验的值，当开方检验的值为0.455时，相关性的置信度是50%
 	 */
 	private double minCHIValue = 0.455;
 	
@@ -56,10 +56,22 @@ public class CHISelector implements ITermSelector{
 	 * 参与训练的样本的总数
 	 */
 	private int trainDocumentsNum;
+	
+	public int getTrainDocumentsNum() {
+		return trainDocumentsNum;
+	}
+
+	public void setTrainDocumentsNum(int trainDocumentsNum) {
+		this.trainDocumentsNum = trainDocumentsNum;
+	}
 
 	public CHISelector() {
 		super();
-		// TODO Auto-generated constructor stub
+	}
+
+	public CHISelector(int selectNum) {
+		super();
+		this.selectNum = selectNum;
 	}
 
 	@Override
@@ -109,26 +121,42 @@ public class CHISelector implements ITermSelector{
 				double CHIValue = calculateCHI(A, B, C, D);
 				this.termInfo.put(term, CHIValue);
 			}
-			results = selectTopN(termInfo);
+			results = selectTopN(termInfo, this.selectNum);
 		}
-		return null;
+		return results;
 	}
 
-	public List<Term> selectTopN(Map<Term, Double> termMap) {
+	public List<Term> selectTopN(Map<Term, Double> termMap, int N) {
 		List<Term> results = new ArrayList<Term>();
-		int length = termMap.size();
-		double[] values = new double[length];
-		int position = 0;
-		Collections.sort(new ArrayList<Map.Entry<Term, Double>>(termMap.entrySet()), new Comparator<Map.Entry<Term, Double>>() {   
-            public int compare(Map.Entry<Term, Double> o1, Map.Entry<Term, Double> o2) {
-                return (int) (o2.getValue() - o1.getValue());
-            }
-		});
-		return null;
+		ArrayList<Map.Entry<Term, Double>> tempList = new ArrayList<Map.Entry<Term, Double>>(termMap.entrySet());
+		Collections.sort(tempList,
+				new Comparator<Map.Entry<Term, Double>>() {
+					public int compare(Map.Entry<Term, Double> o1, Map.Entry<Term, Double> o2) {
+						if(o1.getValue() < o2.getValue()){
+							return -1;
+						}else if(o1.getValue() == o2.getValue()){
+							return 0;
+						}else{
+							return 1;
+						}
+					}
+				});
+		for(int i = 0; i < N; i++){
+			if(tempList.get(i).getValue() > this.minCHIValue){
+				results.add(tempList.get(i).getKey());
+			}else{
+				break;
+			}
+		}
+		return results;
 	}
 
 	public double calculateCHI(int a, int b, int c, int d) {
-		return 0;
+		double CHIValue = 0;
+		double numerator = (double)(a + b + c + d)*(a*d - b*c)*(a*d - b*c);
+		double denominator = (double)(a + c)*(a + b)*(b + d)*(c + d);
+		CHIValue = numerator/denominator;
+		return CHIValue;
 	}
 
 	public Set<Term> getAllTerms(CategoryBean category){

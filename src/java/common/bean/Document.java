@@ -17,13 +17,13 @@ public class Document {
 	/**
 	 * document所属的类别，类别应该是可以自动识别的，种类不一定
 	 */
-	private String category;
+	private CategoryBean category;
 
-	public String getCategory() {
+	public CategoryBean getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(CategoryBean category) {
 		this.category = category;
 	}
 
@@ -41,19 +41,6 @@ public class Document {
 	}
 
 	/**
-	 * 所使用的分词器，可以通过spring配置不同的分词器
-	 */
-	private ITokenizer tokenizer = new ICTCLASTokenizer();
-
-	public ITokenizer getTokenizer() {
-		return tokenizer;
-	}
-
-	public void setTokenizer(ITokenizer tokenizer) {
-		this.tokenizer = tokenizer;
-	}
-
-	/**
 	 * document分词前的内容，为一个string，没必要提供set方法
 	 */
 	private String content;
@@ -62,33 +49,10 @@ public class Document {
 		return content;
 	}
 
-	public Document(String content, String category) {
+	public Document(String content, CategoryBean category) {
 		super();
 		this.content = content;
 		this.category = category;
-		init();
-	}
-
-	private void init() {
-		if (this.content == null || this.content.length() == 0) {
-			log.error("创建Document时，content不能为空");
-		} else if (this.category == null || this.category.length() == 0) {
-			log.error("创建Document时，category不能为空");
-		} else {
-			String[] termsTemp = this.tokenizer.tokenize(this.content);
-			for(String sterm : termsTemp){
-				if(sterm == null || sterm.length() <= 2){
-					continue;
-				}else{
-					Term term = new Term(sterm);
-					if(terms.contains(term)){
-						term.addFrequency();
-					}else{
-						terms.add(term);
-					}
-				}
-			}
-		}
 	}
 
 	public svm_node[] getSvmNodeArray() {

@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="lib/libsvm.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/spring-core-3.2.0.RELEASE.jar" sourcepath="libsrc/spring-core-3.2.0.RELEASE-sources.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-3.2.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-beans-3.2.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

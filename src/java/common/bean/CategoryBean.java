@@ -1,10 +1,9 @@
-package category;
+package common.bean;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import common.bean.Document;
 
 public class CategoryBean {
 
@@ -14,6 +13,14 @@ public class CategoryBean {
 	
 	private String categoryName;
 	
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+
 	private List<Document> documents;
 
 	public List<Document> getDocuments() {
