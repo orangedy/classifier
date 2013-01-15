@@ -7,9 +7,11 @@ import org.apache.log4j.Logger;
 
 public class CategoryBean {
 
-	private Logger log = Logger.getLogger(CategoryBean.class);
+	private static Logger log = Logger.getLogger(CategoryBean.class);
 	
-	private int categoryId;
+	private static int id = 0;
+	
+	private long categoryId;
 	
 	private String categoryName;
 	
@@ -31,10 +33,11 @@ public class CategoryBean {
 		this.documents = documents;
 	}
 
-	public CategoryBean() {
+	public CategoryBean(String categoryName) {
 		super();
-		// TODO Auto-generated constructor stub
+		CategoryBean.id++;
+		this.categoryName = categoryName;
+		this.categoryId = CategoryBean.id;
 	}
-	
 	
 }

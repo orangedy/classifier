@@ -4,5 +4,7 @@ public interface DataSource {
 
 	public String[] getCategorys();
 	
-	public String[] getContentDirByCategory(String category);
+	public String[] getContentsByCategory(String category);
+	
+	public String[] getContents();
 }

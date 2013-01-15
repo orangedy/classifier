@@ -3,6 +3,8 @@ package category;
 import java.util.List;
 
 import common.bean.CategoryBean;
+import common.bean.Document;
+import common.datasource.DataFormatHelper;
 import common.datasource.DataSource;
 
 public abstract class AbstractClassifier {
@@ -65,10 +67,10 @@ public abstract class AbstractClassifier {
 	
 	public void excuteTrain(){
 		if(this.dataSource != null){
-			String[] categorys = this.dataSource.getCategorys();
-			for(String category : categorys){
-				CategoryBean categoryBean = new CategoryBean();
-				this.categorys.add(categoryBean);
+			categorys = DataFormatHelper.getCategorys(this.dataSource);
+			for(CategoryBean category : categorys){
+				List<Document> documents = DataFormatHelper.getContentsByCategory(this.dataSource, category);
+				category.setDocuments(documents);
 			}
 		}
 	}
