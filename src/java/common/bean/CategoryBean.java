@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 
 public class CategoryBean {
 
-	private static Logger log = Logger.getLogger(CategoryBean.class);
-	
 	private static int id = 0;
 	
 	private long categoryId;
@@ -21,16 +19,6 @@ public class CategoryBean {
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
-	}
-
-	private List<Document> documents;
-
-	public List<Document> getDocuments() {
-		return documents;
-	}
-
-	public void setDocuments(List<Document> documents) {
-		this.documents = documents;
 	}
 
 	public CategoryBean(String categoryName) {
