@@ -1,6 +1,7 @@
 package category;
 
 import java.util.List;
+import java.util.Map;
 
 import common.bean.CategoryBean;
 import common.bean.Document;
@@ -60,6 +61,8 @@ public abstract class AbstractClassifier {
 	public void setCategorys(List<CategoryBean> categorys) {
 		this.categorys = categorys;
 	}
+	
+	private Map<String, List<Document>> map;
 
 	public AbstractClassifier() {
 		super();
