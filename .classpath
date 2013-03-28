@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src/resources"/>
 	<classpathentry kind="src" path="src/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/libsvm.jar"/>
+	<classpathentry kind="lib" path="lib/libsvm.jar" sourcepath="F:/JARS/libsvm-3.12/java"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar" sourcepath="libsrc/log4j-source.jar"/>
 	<classpathentry kind="lib" path="lib/spring-core-3.2.0.RELEASE.jar" sourcepath="libsrc/spring-core-3.2.0.RELEASE-sources.jar"/>
 	<classpathentry kind="lib" path="lib/spring-context-3.2.0.RELEASE.jar"/>

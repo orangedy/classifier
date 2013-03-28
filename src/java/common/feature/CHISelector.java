@@ -125,6 +125,11 @@ public class CHISelector implements ITermSelector{
 		}
 		return results;
 	}
+	
+	public List<Term> selectTerms(Map<CategoryBean, List<Document>> map){
+		
+		return null;
+	}
 
 	public List<Term> selectTopN(Map<Term, Double> termMap, int N) {
 		List<Term> results = new ArrayList<Term>();
