@@ -16,7 +16,7 @@ import common.util.FileUtil;
  * @author orangedy
  * 
  */
-public class DataFromFile implements DataSource {
+public class TrainDataFromFile implements TrainDataSource {
 
 	private File trainDataDir;
 
@@ -36,7 +36,7 @@ public class DataFromFile implements DataSource {
 		this.categorys = categorys;
 	}
 
-	public DataFromFile(String trainDataDir, String evalDataDir) {
+	public TrainDataFromFile(String trainDataDir, String evalDataDir) {
 		if (trainDataDir != null && trainDataDir.length() != 0) {
 			this.trainDataDir = new File(trainDataDir);
 			if (!this.trainDataDir.isDirectory()) {
@@ -73,7 +73,7 @@ public class DataFromFile implements DataSource {
 			ret[i] = trainDataDir.getPath() + File.separator + category + File.separator + ret[i];
 			File file = new File(ret[i]);
 			if (file.exists()) {
-				String content = FileUtil.reanFile(file);
+				String content = FileUtil.readFile(file);
 				contents.add(content);
 			}
 		}
@@ -89,7 +89,7 @@ public class DataFromFile implements DataSource {
 				ret[i] = this.evalDataDir.getPath() + File.separator + ret[i];
 				File file = new File(ret[i]);
 				if (file.exists()) {
-					String content = FileUtil.reanFile(file);
+					String content = FileUtil.readFile(file);
 					contents.add(content);
 				}
 			}
@@ -99,7 +99,7 @@ public class DataFromFile implements DataSource {
 	}
 
 	public static void main(String[] args) {
-		DataFromFile test = new DataFromFile("E:\\worktemp\\SogouC.mini\\Sample",
+		TrainDataFromFile test = new TrainDataFromFile("E:\\worktemp\\SogouC.mini\\Sample",
 				"E:\\worktemp\\SogouC.mini\\Sample\\C000007");
 		String[] categorys = test.getCategorys();
 		for (String category : categorys) {

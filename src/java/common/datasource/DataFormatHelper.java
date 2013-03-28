@@ -8,7 +8,7 @@ import common.bean.Document;
 
 public class DataFormatHelper {
 
-	public static List<CategoryBean> getCategorys(DataSource dataSource){
+	public static List<CategoryBean> getCategorys(TrainDataSource dataSource){
 		String[] categorys = dataSource.getCategorys();
 		List<CategoryBean> categoryBeans = new ArrayList<CategoryBean>();
 		if(categorys.length != 0){
@@ -20,7 +20,7 @@ public class DataFormatHelper {
 		return categoryBeans;
 	}
 	
-	public static List<Document> getContentsByCategory(DataSource dataSource, CategoryBean category){
+	public static List<Document> getContentsByCategory(TrainDataSource dataSource, CategoryBean category){
 		String[] contents = dataSource.getContentsByCategory(category.getCategoryName());
 		List<Document> documents = new ArrayList<Document>();
 		if(contents.length != 0){
@@ -32,7 +32,7 @@ public class DataFormatHelper {
 		return documents;
 	}
 	
-	public static List<Document> getContents(DataSource dataSource){
+	public static List<Document> getContents(TrainDataSource dataSource){
 		String[] contents = dataSource.getContents();
 		List<Document> documents = new ArrayList<Document>();
 		if(contents.length != 0){

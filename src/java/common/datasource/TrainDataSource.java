@@ -1,6 +1,6 @@
 package common.datasource;
 
-public interface DataSource {
+public interface TrainDataSource {
 
 	public String[] getCategorys();
 	

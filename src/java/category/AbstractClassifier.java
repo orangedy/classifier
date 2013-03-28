@@ -10,7 +10,7 @@ import common.bean.CategoryBean;
 import common.bean.Document;
 import common.bean.Term;
 import common.datasource.DataFormatHelper;
-import common.datasource.DataSource;
+import common.datasource.TrainDataSource;
 import common.feature.ITermSelector;
 import common.tokenizer.ITokenizer;
 
@@ -45,13 +45,13 @@ public abstract class AbstractClassifier {
 	/**
 	 * 文本数据来源
 	 */
-	private DataSource dataSource;
+	private TrainDataSource dataSource;
 
-	public DataSource getDataSource() {
+	public TrainDataSource getDataSource() {
 		return dataSource;
 	}
 
-	public void setDataSource(DataSource dataSource) {
+	public void setDataSource(TrainDataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 

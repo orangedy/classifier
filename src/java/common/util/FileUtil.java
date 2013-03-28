@@ -14,7 +14,7 @@ public class FileUtil {
 
 	private static Logger log = Logger.getLogger(FileUtil.class);
 
-	public static String reanFile(File file) {
+	public static String readFile(File file) {
 		StringBuilder line = new StringBuilder();
 		try {
 			// BufferedReader reader = new BufferedReader(new FileReader(file));
