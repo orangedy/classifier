@@ -9,7 +9,6 @@ import java.util.Map;
 import common.bean.CategoryBean;
 import common.bean.Document;
 import common.bean.Term;
-import common.datasource.DataFormatHelper;
 import common.datasource.TrainDataSource;
 import common.feature.ITermSelector;
 import common.tokenizer.ITokenizer;
@@ -119,16 +118,16 @@ public abstract class AbstractClassifier {
 	}
 
 	public void excuteTrain() {
-		if (this.dataSource != null) {
-			categorys = DataFormatHelper.getCategorys(this.dataSource);
-			Map<CategoryBean, List<Document>> documentsMap = new HashMap<CategoryBean, List<Document>>();
-			for (CategoryBean category : categorys) {
-				List<Document> documents = DataFormatHelper.getContentsByCategory(this.dataSource, category);
-				documentsMap.put(category, documents);
-			}
-			initDocuments(documentsMap);
-			
-		}
+//		if (this.dataSource != null) {
+//			categorys = DataFormatHelper.getCategorys(this.dataSource);
+//			Map<CategoryBean, List<Document>> documentsMap = new HashMap<CategoryBean, List<Document>>();
+//			for (CategoryBean category : categorys) {
+//				List<Document> documents = DataFormatHelper.getContentsByCategory(this.dataSource, category);
+//				documentsMap.put(category, documents);
+//			}
+//			initDocuments(documentsMap);
+//			
+//		}
 	}
 
 	public void excuteEval() {

@@ -1,10 +1,17 @@
 package common.datasource;
 
+import java.util.List;
+
+import common.bean.CategoryBean;
+import common.bean.Document;
+
 public interface TrainDataSource {
 
-	public String[] getCategorys();
+	public void init();
 	
-	public String[] getContentsByCategory(String category);
+	public List<CategoryBean> getCategorys();
 	
-	public String[] getContents();
+	public Document getNextDocument();
+	
+	public boolean haveNext();
 }

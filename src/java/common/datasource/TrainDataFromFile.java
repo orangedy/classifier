@@ -2,9 +2,18 @@ package common.datasource;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
+
+import common.bean.CategoryBean;
+import common.bean.Document;
 import common.util.FileUtil;
 
 /**
@@ -13,107 +22,83 @@ import common.util.FileUtil;
  * eval下包括positive和negative两个文件夹，分别存放正样本和副样本文件，都以纯文本的方式存储数据，多类别时文件名表示类别名
  * 输出为字符串数组
  * 
+ * 是不是效率考虑的太多了？所有文件同时读如内存又怎么样？
  * @author orangedy
  * 
  */
 public class TrainDataFromFile implements TrainDataSource {
+	private static Logger log = Logger.getLogger(TrainDataFromFile.class);
 
-	private File trainDataDir;
+	private String trainDataDir;
 
-	private File evalDataDir;
+	private List<CategoryBean> categorys;
+	
+	private List<Document> documents;
 
-	private String[] categorys;
-
-	public String[] getCategorys() {
-		if (this.categorys != null && this.categorys.length != 0) {
-			return categorys;
-		} else {
-			return new String[0];
-		}
+	public List<CategoryBean> getCategorys() {
+		return this.categorys;
 	}
 
-	public void setCategorys(String[] categorys) {
-		this.categorys = categorys;
+	public TrainDataFromFile(String trainDataDir) {
+		this.trainDataDir = trainDataDir;
 	}
-
-	public TrainDataFromFile(String trainDataDir, String evalDataDir) {
-		if (trainDataDir != null && trainDataDir.length() != 0) {
-			this.trainDataDir = new File(trainDataDir);
-			if (!this.trainDataDir.isDirectory()) {
-				throw new IllegalArgumentException("训练语料库搜索失败！ [" + trainDataDir + "]");
-			}
-			categorys = this.trainDataDir.list();
-		}
-		if (evalDataDir != null && evalDataDir.length() != 0) {
-			this.evalDataDir = new File(evalDataDir);
-			if (!this.evalDataDir.isDirectory()) {
-				throw new IllegalArgumentException("分类语料库搜索失败！ [" + evalDataDir + "]");
-			}
-		}
-	}
-
-	/**
-	 * 根据类别名，获取该类别所有的数据文件路径
-	 * 
-	 * @param category
-	 *            类别名
-	 * @return
-	 */
-	public String[] getContentsByCategory(String category) {
-		if (category == null || category.equals("")) {
-			return new String[0];
-		}
-		File classDir = new File(trainDataDir.getPath() + File.separator + category);
-		String[] ret = classDir.list();
-		if (ret == null || ret.length <= 0) {
-			return new String[0];
-		}
-		List<String> contents = new ArrayList<String>();
-		for (int i = 0; i < ret.length; i++) {
-			ret[i] = trainDataDir.getPath() + File.separator + category + File.separator + ret[i];
-			File file = new File(ret[i]);
-			if (file.exists()) {
-				String content = FileUtil.readFile(file);
-				contents.add(content);
-			}
-		}
-		return contents.toArray(new String[contents.size()]);
-	}
-
-	@Override
-	public String[] getContents() {
-		if (this.evalDataDir != null) {
-			String[] ret = this.evalDataDir.list();
-			List<String> contents = new ArrayList<String>();
-			for (int i = 0; i < ret.length; i++) {
-				ret[i] = this.evalDataDir.getPath() + File.separator + ret[i];
-				File file = new File(ret[i]);
-				if (file.exists()) {
-					String content = FileUtil.readFile(file);
-					contents.add(content);
+	
+	public void init(){
+		File trainRoot = new File(this.trainDataDir);
+		if(trainRoot.isDirectory()){
+			String[] categoryNames = trainRoot.list();
+			this.categorys = new ArrayList<CategoryBean>();
+			this.documents = new ArrayList<Document>();
+			for(String categoryName : categoryNames){
+				CategoryBean category = new CategoryBean(categoryName);
+				this.categorys.add(category);
+				File classDir = new File(trainDataDir + File.separator + categoryName);
+				String[] subFiles = classDir.list();
+				for(String subFile : subFiles){
+					File file = new File(this.trainDataDir + File.separator + categoryName + File.separator + subFile);
+					if(file.exists()){
+						String content = FileUtil.readFile(file);
+						Document document = new Document(content, category);
+						this.documents.add(document);
+					}
 				}
 			}
-			return contents.toArray(new String[contents.size()]);
+		}else{
+			log.error("train data dir is not dirctory:" + this.trainDataDir);
 		}
-		return new String[0];
+	}
+
+	/* 返回下一个文档
+	 * 当map为空时，没有未处理的document，返回null
+	 * @see common.datasource.TrainDataSource#getNextDocument()
+	 */
+	public Document getNextDocument(){
+		Document document = null;
+		if(this.documents.isEmpty()){
+			throw new RuntimeException("no more document");
+		}else{
+			document = this.documents.remove(0);
+		}
+		return document;
+	}
+	
+	public boolean haveNext(){
+		if(this.documents.isEmpty()){
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	public static void main(String[] args) {
-		TrainDataFromFile test = new TrainDataFromFile("E:\\worktemp\\SogouC.mini\\Sample",
-				"E:\\worktemp\\SogouC.mini\\Sample\\C000007");
-		String[] categorys = test.getCategorys();
-		for (String category : categorys) {
-			System.out.println(category);
-			String[] contents = test.getContentsByCategory(category);
-			for (String content : contents) {
-				System.out.println(content);
-			}
+		TrainDataFromFile test = new TrainDataFromFile("E:\\worktemp\\Sample");
+		Date start = new Date();
+		test.init();
+		while(test.haveNext()){
+			Document document = test.getNextDocument();
+			System.out.println(document.getCategory().getCategoryName() + " " + document.getContent());
 		}
-
-		String[] evalData = test.getContents();
-		for (String str : evalData) {
-			System.out.println(str);
-		}
-
+		Date finish = new Date();
+		System.out.println(finish.getTime() - start.getTime());
 	}
 }

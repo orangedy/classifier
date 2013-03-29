@@ -50,6 +50,11 @@ public class Term{
 		this.frequency = 1;
 		init();
 	}
+	
+	public Term(String sterm, int frequency){
+		this.term = sterm;
+		this.frequency = frequency;
+	}
 
 	public void init() {
 		if(this.term.length() <= 2){

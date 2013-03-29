@@ -3,12 +3,18 @@ package category;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import common.bean.CategoryBean;
+import common.bean.Document;
 import common.datasource.TrainDataSource;
 
 import category.processor.Processor;
 
 public abstract class AbstractTrainer extends AbstractClassifier {
+	
+	private static Logger log = Logger.getLogger(AbstractTrainer.class);
+	
 	/**
 	 * 处理器
 	 */
@@ -47,28 +53,44 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 	public void setCategorys(List<CategoryBean> categorys) {
 		this.categorys = categorys;
 	}
+	
+	/**
+	 * 待训练的样本
+	 */
+	private List<Document> documents = new ArrayList<Document>();
 
+	public List<Document> getDocuments() {
+		return documents;
+	}
+
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
+	}
+	
 	public void train() {
-		if (this.trainDataSource != null) {
-			// this.categorys = this.trainDataSource.getCategorys();
-
-		} else {
-
+		if(initCategorys()){
+			while(this.trainDataSource.haveNext()){
+				Document document = this.trainDataSource.getNextDocument();
+				this.documents.add(document);
+				for(Processor processor : this.processors){
+					processor.process(document);
+				}
+			}
+			//特征提取
+			
+			//训练
 		}
 	}
 
-	private void initCategorys() {
-		String[] categorys = this.trainDataSource.getCategorys();
-		if(categorys.length != 0){
-			
-			List<CategoryBean> categoryBeans = new ArrayList<CategoryBean>();
-			for (String category : categorys) {
-				CategoryBean categoryBean = new CategoryBean(category);
-				categoryBeans.add(categoryBean);
-			}
-			this.categorys = categoryBeans;
-		}else{
-			
+	private boolean initCategorys() {
+		boolean result = true;
+		if (this.trainDataSource != null) {
+			this.trainDataSource.init();
+			this.categorys = this.trainDataSource.getCategorys();
+		} else {
+			result = false;
+			log.error("trainDataSource is null");
 		}
+		return result;
 	}
 }

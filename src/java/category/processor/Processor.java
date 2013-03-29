@@ -1,7 +1,9 @@
 package category.processor;
 
+import common.bean.Document;
+
 public abstract class Processor {
 	
-	abstract void process();
+	public abstract void process(Document document);
 	
 }

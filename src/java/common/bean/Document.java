@@ -39,14 +39,31 @@ public class Document {
 	public void setTerms(Set<Term> terms) {
 		this.terms = terms;
 	}
+	
+//	/**
+//	 * 分词后的词，包括重复的词，没有合并
+//	 */
+//	private String[] termTemp;
+//
+//	public String[] getTermTemp() {
+//		return termTemp;
+//	}
+//
+//	public void setTermTemp(String[] termTemp) {
+//		this.termTemp = termTemp;
+//	}
 
 	/**
-	 * document分词前的内容，为一个string，没必要提供set方法
+	 * document分词前的内容，为一个string，set方法可以释放文档的内容
 	 */
 	private String content;
 
 	public String getContent() {
 		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 	public Document(String content, CategoryBean category) {

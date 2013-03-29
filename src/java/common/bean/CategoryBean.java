@@ -9,8 +9,12 @@ public class CategoryBean {
 
 	private static int id = 0;
 	
-	private long categoryId;
+	private int categoryId;
 	
+	public int getCategoryId() {
+		return categoryId;
+	}
+
 	private String categoryName;
 	
 	public String getCategoryName() {
