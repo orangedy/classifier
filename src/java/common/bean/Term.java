@@ -44,7 +44,7 @@ public class Term{
 	public void setTermType(String termType) {
 		this.termType = termType;
 	}
-
+	
 	public Term(String sterm) {
 		this.term = sterm;
 		this.frequency = 1;

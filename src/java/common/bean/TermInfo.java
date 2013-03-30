@@ -31,4 +31,8 @@ public class TermInfo {
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
+	
+	public TermInfo(){
+		
+	}
 }

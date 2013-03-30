@@ -1,30 +1,35 @@
 package category;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import common.bean.CategoryBean;
 import common.bean.Document;
+import common.bean.TermInfo;
 import common.datasource.TrainDataSource;
+import common.feature.ITermSelector;
 
+import category.processor.DocumentToVectorProcessor;
 import category.processor.Processor;
 
 public abstract class AbstractTrainer extends AbstractClassifier {
-	
+
 	private static Logger log = Logger.getLogger(AbstractTrainer.class);
-	
+
 	/**
 	 * 处理器
 	 */
-	private Processor[] processors;
+	private List<Processor> processors;
 
-	public Processor[] getProcessors() {
+	public List<Processor> getProcessors() {
 		return processors;
 	}
 
-	public void setProcessors(Processor[] processors) {
+	public void setProcessors(List<Processor> processors) {
 		this.processors = processors;
 	}
 
@@ -53,7 +58,7 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 	public void setCategorys(List<CategoryBean> categorys) {
 		this.categorys = categorys;
 	}
-	
+
 	/**
 	 * 待训练的样本
 	 */
@@ -66,19 +71,73 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}
-	
+
+	/**
+	 * 词的统计信息，格式如下： 词 类别1 类别2 类别3... ‘训练’ 2 3 0 ......
+	 */
+	private Map<String, TermInfo> termsInfo = new HashMap<String, TermInfo>();
+
+	public Map<String, TermInfo> getTermsInfo() {
+		return termsInfo;
+	}
+
+	public void setTermsInfo(Map<String, TermInfo> termsInfo) {
+		this.termsInfo = termsInfo;
+	}
+
+	/**
+	 * 特征选择算法 默认实现CHI
+	 */
+	private ITermSelector termSelector;
+
+	public ITermSelector getTermSelector() {
+		return termSelector;
+	}
+
+	public void setTermSelector(ITermSelector termSelector) {
+		this.termSelector = termSelector;
+	}
+
+	/**
+	 * 文档转化为向量的处理器
+	 */
+	private DocumentToVectorProcessor documentToVector;
+
+	public DocumentToVectorProcessor getDocumentToVector() {
+		return documentToVector;
+	}
+
+	public void setDocumentToVector(DocumentToVectorProcessor documentToVector) {
+		this.documentToVector = documentToVector;
+	}
+
 	public void train() {
-		if(initCategorys()){
-			while(this.trainDataSource.haveNext()){
+		if (initCategorys()) {
+			initProcessor();
+			while (this.trainDataSource.haveNext()) {
 				Document document = this.trainDataSource.getNextDocument();
 				this.documents.add(document);
-				for(Processor processor : this.processors){
+				for (Processor processor : this.processors) {
 					processor.process(document);
 				}
 			}
-			//特征提取
-			
-			//训练
+			// 特征提取
+			int[] documentNumEachCategory = new int[this.categorys.size()];
+			for (int i = 0; i < documentNumEachCategory.length; i++) {
+				documentNumEachCategory[i] = this.categorys.get(i).getDocumentNum();
+			}
+			Map<String, Integer> selectTerms = this.termSelector.selectTerms(this.termsInfo, documentNumEachCategory);
+			// test
+			for (String term : selectTerms.keySet()) {
+				log.debug("term:" + term);
+			}
+			this.termsInfo = null;
+			this.documentToVector.setSelectTerms(selectTerms);
+			for (Document document : this.documents) {
+				this.documentToVector.process(document);
+			}
+			// 训练
+			doTrain();
 		}
 	}
 
@@ -93,4 +152,12 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 		}
 		return result;
 	}
+
+	private void initProcessor() {
+		for (Processor processor : this.processors) {
+			processor.init(this);
+		}
+	}
+
+	public abstract void doTrain();
 }

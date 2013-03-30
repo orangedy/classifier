@@ -41,6 +41,7 @@ public class TrainDataFromFile implements TrainDataSource {
 
 	public TrainDataFromFile(String trainDataDir) {
 		this.trainDataDir = trainDataDir;
+//		init();
 	}
 	
 	public void init(){
@@ -54,14 +55,17 @@ public class TrainDataFromFile implements TrainDataSource {
 				this.categorys.add(category);
 				File classDir = new File(trainDataDir + File.separator + categoryName);
 				String[] subFiles = classDir.list();
+				int sum = 0;
 				for(String subFile : subFiles){
 					File file = new File(this.trainDataDir + File.separator + categoryName + File.separator + subFile);
 					if(file.exists()){
 						String content = FileUtil.readFile(file);
 						Document document = new Document(content, category);
 						this.documents.add(document);
+						sum++;
 					}
 				}
+				category.setDocumentNum(sum);
 			}
 		}else{
 			log.error("train data dir is not dirctory:" + this.trainDataDir);

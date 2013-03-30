@@ -7,13 +7,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ClassifierMain {
 
 	public static void main(String[] args) {
-		ApplicationContext ctx = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-		AbstractClassifier classifier = (AbstractClassifier)ctx.getBean("classifier");
-		if(classifier.isNeedTrain()){
-			classifier.excuteTrain();
-		}
-		if(classifier.isNeedEval()){
-			classifier.excuteEval();
-		}
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("ApplicationContent.xml");
+		AbstractTrainer train = (AbstractTrainer)ctx.getBean("trainer");
+		train.train();
 	}
 }

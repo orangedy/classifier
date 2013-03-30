@@ -1,6 +1,8 @@
 package common.bean;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -66,6 +68,19 @@ public class Document {
 		this.content = content;
 	}
 
+	/**
+	 * 文档转化成向量表示
+	 */
+	private List<svm_node> vectors = new ArrayList<svm_node>();
+	
+	public List<svm_node> getVectors() {
+		return vectors;
+	}
+
+	public void setVectors(List<svm_node> vectors) {
+		this.vectors = vectors;
+	}
+
 	public Document(String content, CategoryBean category) {
 		super();
 		this.content = content;
@@ -73,7 +88,12 @@ public class Document {
 	}
 
 	public svm_node[] getSvmNodeArray() {
-		return null;
+		int l = this.vectors.size();
+		svm_node[] nodes = new svm_node[l];
+		return this.vectors.toArray(nodes);
 	}
 
+	public void addNode(svm_node node){
+		this.vectors.add(node);
+	}
 }

@@ -3,6 +3,8 @@ package category.processor;
 import java.util.HashMap;
 import java.util.Map;
 
+import category.AbstractTrainer;
+
 import common.bean.Document;
 import common.bean.Term;
 import common.tokenizer.ITokenizer;
@@ -31,6 +33,7 @@ public class TokenizerProcessor extends Processor {
 		//释放文档内容，已经不再需要
 		document.setContent(null);
 		
+		//可以考虑使用谷歌的guava提高效率，map中使用Integer每次都要创建新的实例(超过-128至127)
 		Map<String, Integer> termNum = new HashMap<String, Integer>();
 		for (String word : words) {
 			// 文档内词出现的频率统计
@@ -49,6 +52,12 @@ public class TokenizerProcessor extends Processor {
 			Term term = new Term(word, num);
 			document.getTerms().add(term);
 		}
+	}
+
+	@Override
+	public void init(AbstractTrainer train) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

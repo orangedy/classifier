@@ -5,15 +5,49 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-      <bean id="classifier" class="category.svm.SVMClassifier">
-      	<property name="needTrain" value="true" />
-      	<property name="needEval" value="true" />
-      	<property name="dataSource">
-      		<ref bean="dateSource"/>
+      <bean id="trainer" class="category.svm.SVMClassifier">
+      	<property name="trainDataSource">
+      		<ref local="trainDataSource"/>
+      	</property>
+      	<property name="termSelector">
+      		<ref local="termSelector" />
+      	</property>
+      	<property name="documentToVector">
+      		<ref local="documentToVector"/>
+      	</property>
+      	<property name="processors">
+      		<list>
+      			<ref local="tokenizerProcessor"/>
+      			<ref local="termSelectorProcessor" />
+      		</list>
+      	</property>
+      	<property name="outputPath">
+      		<value>E:\\worktemp\\result\\svm_mode.txt</value>
       	</property>
       </bean>
-      <bean id="dataSource" class="category.common.datesource.DataFromFile">
-      	<constructor-arg index=0 value="E:\\worktemp\\SogouC.mini\\Sample" />
-      	<constructor-arg index=1 value="E:\\worktemp\\SogouC.mini\\Sample\\C000007" />
+      
+      <bean id="trainDataSource" class="common.datasource.TrainDataFromFile">
+      	<constructor-arg index="0">
+      		<value>E:\\worktemp\\Sample</value>
+      	</constructor-arg>
       </bean>
+      
+      <bean id="termSelector" class="common.feature.CHISelector">
+      	<constructor-arg index="0">
+      		<value>2000</value>
+      	</constructor-arg>
+      </bean>
+      
+      <bean id="documentToVector" class="category.processor.DocumentToVectorProcessor">
+      </bean>
+      
+      <bean id="tokenizerProcessor" class="category.processor.TokenizerProcessor">
+      	<property name="tokenizer">
+      		<ref local="tokenizer"/>
+      	</property>
+      </bean>
+      
+      <bean id="tokenizer" class="common.tokenizer.ICTCLASTokenizer"></bean>
+      
+      <bean id="termSelectorProcessor" class="category.processor.TermSelectorProcessor"></bean>
 </beans>
