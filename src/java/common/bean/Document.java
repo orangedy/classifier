@@ -86,6 +86,10 @@ public class Document {
 		this.content = content;
 		this.category = category;
 	}
+	
+	public Document(String content){
+		this.content = content;
+	}
 
 	public svm_node[] getSvmNodeArray() {
 		int l = this.vectors.size();

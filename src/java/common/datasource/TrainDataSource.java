@@ -7,7 +7,7 @@ import common.bean.Document;
 
 public interface TrainDataSource {
 
-	public void init();
+	public boolean init();
 	
 	public List<CategoryBean> getCategorys();
 	

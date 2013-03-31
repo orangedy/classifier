@@ -44,7 +44,8 @@ public class TrainDataFromFile implements TrainDataSource {
 //		init();
 	}
 	
-	public void init(){
+	public boolean init(){
+		boolean result = true;
 		File trainRoot = new File(this.trainDataDir);
 		if(trainRoot.isDirectory()){
 			String[] categoryNames = trainRoot.list();
@@ -68,8 +69,10 @@ public class TrainDataFromFile implements TrainDataSource {
 				category.setDocumentNum(sum);
 			}
 		}else{
+			result = false;
 			log.error("train data dir is not dirctory:" + this.trainDataDir);
 		}
+		return result;
 	}
 
 	/* 返回下一个文档

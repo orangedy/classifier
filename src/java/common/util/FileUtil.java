@@ -29,6 +29,8 @@ public class FileUtil {
 		} catch (IOException e) {
 			log.error("file read error" + file.getAbsolutePath());
 			e.printStackTrace();
+		} finally{
+		
 		}
 		return line.toString();
 	}
