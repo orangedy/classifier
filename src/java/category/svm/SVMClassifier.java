@@ -1,5 +1,6 @@
 package category.svm;
 
+import java.io.File;
 import java.io.IOException;
 
 import libsvm.svm;
@@ -37,6 +38,7 @@ public class SVMClassifier extends AbstractTrainer {
 	public void doTrain(){
 		svm_parameter param = getParam();
 		svm_problem problem = getSvmProblem();
+		this.outputPath = System.getProperty("user.dir") + File.separator + this.outputPath;
 		training(problem, param, this.outputPath, true);
 		
 	}

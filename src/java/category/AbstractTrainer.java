@@ -1,5 +1,7 @@
 package category;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import common.bean.Document;
 import common.bean.TermInfo;
 import common.datasource.TrainDataSource;
 import common.feature.ITermSelector;
+import common.util.FileUtil;
 
 import category.processor.DocumentToVectorProcessor;
 import category.processor.Processor;
@@ -138,6 +141,8 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 			}
 			// 训练
 			doTrain();
+			saveCategoryInfo();
+			saveSelectTerms(selectTerms);
 		}
 	}
 
@@ -156,6 +161,34 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 	private void initProcessor() {
 		for (Processor processor : this.processors) {
 			processor.init(this);
+		}
+	}
+	
+	public void saveCategoryInfo(){
+		String path = "result/category.txt";
+		File file = new File(path);
+		StringBuilder buffer = new StringBuilder();
+		for(CategoryBean category : this.categorys){
+			buffer.append(category.getCategoryId() + " " + category.getCategoryName() + "\n");
+		}
+		try {
+			FileUtil.writeStringToFile(file, buffer.toString(), false, "gb2312");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveSelectTerms(Map<String, Integer> selectTerms){
+		String path = "result/terms.txt";
+		File file = new File(path);
+		StringBuilder buffer = new StringBuilder();
+		for(Map.Entry<String, Integer> entry : selectTerms.entrySet()){
+			buffer.append(entry.getKey() + " " + entry.getValue() + "\n");
+		}
+		try {
+			FileUtil.writeStringToFile(file, buffer.toString(), false, "gb2312");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

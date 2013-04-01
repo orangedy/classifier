@@ -1,6 +1,7 @@
 package common.datasource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -23,6 +24,7 @@ import common.util.FileUtil;
  * 输出为字符串数组
  * 
  * 是不是效率考虑的太多了？所有文件同时读如内存又怎么样？
+ * 
  * @author orangedy
  * 
  */
@@ -32,7 +34,7 @@ public class TrainDataFromFile implements TrainDataSource {
 	private String trainDataDir;
 
 	private List<CategoryBean> categorys;
-	
+
 	private List<Document> documents;
 
 	public List<CategoryBean> getCategorys() {
@@ -41,58 +43,64 @@ public class TrainDataFromFile implements TrainDataSource {
 
 	public TrainDataFromFile(String trainDataDir) {
 		this.trainDataDir = trainDataDir;
-//		init();
+		// init();
 	}
-	
-	public boolean init(){
+
+	public boolean init() {
 		boolean result = true;
 		File trainRoot = new File(this.trainDataDir);
-		if(trainRoot.isDirectory()){
+		if (trainRoot.isDirectory()) {
 			String[] categoryNames = trainRoot.list();
 			this.categorys = new ArrayList<CategoryBean>();
 			this.documents = new ArrayList<Document>();
-			for(String categoryName : categoryNames){
+			for (String categoryName : categoryNames) {
 				CategoryBean category = new CategoryBean(categoryName);
 				this.categorys.add(category);
 				File classDir = new File(trainDataDir + File.separator + categoryName);
 				String[] subFiles = classDir.list();
 				int sum = 0;
-				for(String subFile : subFiles){
+				for (String subFile : subFiles) {
 					File file = new File(this.trainDataDir + File.separator + categoryName + File.separator + subFile);
-					if(file.exists()){
-						String content = FileUtil.readFile(file);
-						Document document = new Document(content, category);
-						this.documents.add(document);
-						sum++;
+					if (file.exists()) {
+						String content;
+						try {
+							content = FileUtil.readFile(file);
+							Document document = new Document(content, category);
+							this.documents.add(document);
+							sum++;
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 				category.setDocumentNum(sum);
 			}
-		}else{
+		} else {
 			result = false;
 			log.error("train data dir is not dirctory:" + this.trainDataDir);
 		}
 		return result;
 	}
 
-	/* 返回下一个文档
-	 * 当map为空时，没有未处理的document，返回null
+	/*
+	 * 返回下一个文档 当map为空时，没有未处理的document，抛出运行异常
+	 * 
 	 * @see common.datasource.TrainDataSource#getNextDocument()
 	 */
-	public Document getNextDocument(){
+	public Document getNextDocument() {
 		Document document = null;
-		if(this.documents.isEmpty()){
+		if (this.documents.isEmpty()) {
 			throw new RuntimeException("no more document");
-		}else{
+		} else {
 			document = this.documents.remove(0);
 		}
 		return document;
 	}
-	
-	public boolean haveNext(){
-		if(this.documents.isEmpty()){
+
+	public boolean haveNext() {
+		if (this.documents.isEmpty()) {
 			return false;
-		}else{
+		} else {
 			return true;
 		}
 	}
@@ -101,7 +109,7 @@ public class TrainDataFromFile implements TrainDataSource {
 		TrainDataFromFile test = new TrainDataFromFile("E:\\worktemp\\Sample");
 		Date start = new Date();
 		test.init();
-		while(test.haveNext()){
+		while (test.haveNext()) {
 			Document document = test.getNextDocument();
 			System.out.println(document.getCategory().getCategoryName() + " " + document.getContent());
 		}

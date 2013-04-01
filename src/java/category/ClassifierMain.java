@@ -10,5 +10,7 @@ public class ClassifierMain {
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("ApplicationContent.xml");
 		AbstractTrainer train = (AbstractTrainer)ctx.getBean("trainer");
 		train.train();
+		AbstractValidator validator = (AbstractValidator) ctx.getBean("validator");
+		validator.eval();
 	}
 }

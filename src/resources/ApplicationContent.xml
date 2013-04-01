@@ -22,13 +22,13 @@
       		</list>
       	</property>
       	<property name="outputPath">
-      		<value>E:\\worktemp\\result\\svm_mode.txt</value>
+      		<value>result/model.txt</value>
       	</property>
       </bean>
       
       <bean id="trainDataSource" class="common.datasource.TrainDataFromFile">
       	<constructor-arg index="0">
-      		<value>E:\\worktemp\\Sample</value>
+      		<value>E:\\categoryworktemp\\SogouC.mini\\Sample</value>
       	</constructor-arg>
       </bean>
       
@@ -50,4 +50,22 @@
       <bean id="tokenizer" class="common.tokenizer.ICTCLASTokenizer"></bean>
       
       <bean id="termSelectorProcessor" class="category.processor.TermSelectorProcessor"></bean>
+      
+      <bean id="validator" class="category.svm.SVMValidator">
+        <property name="validatorDataSource">
+            <ref local="validatorDataSource" />
+        </property>
+        <property name="tokenizer">
+            <ref local="tokenizerProcessor" />
+        </property>
+        <property name="vectorCreator">
+            <ref local="documentToVector"/>
+        </property>
+      </bean>
+      
+      <bean id="validatorDataSource" class="common.datasource.ValidatorDataFromFile">
+        <constructor-arg index="0">
+            <value>E:\\categoryworktemp\\SogouC.mini\\Sample\\C000007</value>
+        </constructor-arg>
+      </bean>
 </beans>

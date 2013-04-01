@@ -13,21 +13,23 @@ public class ValidatorDataFromFileTest extends TestCase{
 	
 	@Override
 	protected void setUp() throws Exception {
-		this.dataSource = new ValidatorDataFromFile("E:\\worktemp\\Sample");
+		this.dataSource = new ValidatorDataFromFile("E:\\categoryworktemp\\SogouC.reduced\\Reduced");
 	}
 	
 	@Test
 	public void testHavaNext() {
 		this.dataSource.init();
-		boolean result = this.dataSource.havaNext();
+		boolean result = this.dataSource.haveNext();
 		assertFalse(result);
 	}
 
 	@Test
 	public void testGetNextDocument() {
 		this.dataSource.init();
-		Document document = this.dataSource.getNextDocument();
-		assertNotNull(document);
+		if(this.dataSource.haveNext()){
+			Document document = this.dataSource.getNextDocument();
+			assertNotNull(document);
+		}
 	}
 
 }
