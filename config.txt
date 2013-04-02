@@ -1,0 +1,28 @@
+# 操作-训练
+train=true
+train_path=E:\\categoryworktemp\\sogou
+#train_path=D:/分类/20120628/train
+#train_path=D:/分类/A
+#train_path=D:/分类/20120420.16.56
+
+# 操作-测试
+eval=true
+eval_path=E:\\categoryworktemp\\sogou\\C000014
+#eval_path=D:/分类/20120628/eval
+#eval_path=D:/分类/A
+#eval_path=D:/分类/20120420.16.56
+
+# model路径
+model_path=result/model.txt
+
+# 特征词路径
+terms_path=result/terms.txt
+
+# 类别信息文件
+category_path=result/category.txt
+
+# 停用词文件路径
+stopword_path=/stopword.txt
+
+# 词性过滤文件
+ignoretype_path=/ignoretype.txt

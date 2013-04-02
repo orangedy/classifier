@@ -12,8 +12,7 @@ public class ModelBuilderProcessor extends Processor{
 		
 	}
 
-	@Override
-	public void init(AbstractTrainer train) {
+	public void init() {
 		// TODO Auto-generated method stub
 		
 	}

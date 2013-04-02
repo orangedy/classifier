@@ -85,7 +85,7 @@ public class FileUtil {
 		}
 		return content;
 	}
-
+	
 	public static void writeStringToFile(File file, String content, boolean append, String encoding) throws IOException {
 		OutputStream out = null;
 		try {

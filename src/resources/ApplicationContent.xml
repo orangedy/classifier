@@ -9,6 +9,9 @@
       	<property name="trainDataSource">
       		<ref local="trainDataSource"/>
       	</property>
+      	<property name="statistics">
+            <ref local="statistics" />
+        </property>
       	<property name="termSelector">
       		<ref local="termSelector" />
       	</property>
@@ -27,9 +30,7 @@
       </bean>
       
       <bean id="trainDataSource" class="common.datasource.TrainDataFromFile">
-      	<constructor-arg index="0">
-      		<value>E:\\categoryworktemp\\SogouC.mini\\Sample</value>
-      	</constructor-arg>
+      	
       </bean>
       
       <bean id="termSelector" class="common.feature.CHISelector">
@@ -39,6 +40,9 @@
       </bean>
       
       <bean id="documentToVector" class="category.processor.DocumentToVectorProcessor">
+        <property name="statistics">
+            <ref local="statistics" />
+        </property>
       </bean>
       
       <bean id="tokenizerProcessor" class="category.processor.TokenizerProcessor">
@@ -49,7 +53,11 @@
       
       <bean id="tokenizer" class="common.tokenizer.ICTCLASTokenizer"></bean>
       
-      <bean id="termSelectorProcessor" class="category.processor.TermSelectorProcessor"></bean>
+      <bean id="termSelectorProcessor" class="category.processor.TermSelectorProcessor">
+        <property name="statistics">
+            <ref local="statistics" />
+        </property>
+      </bean>
       
       <bean id="validator" class="category.svm.SVMValidator">
         <property name="validatorDataSource">
@@ -64,8 +72,8 @@
       </bean>
       
       <bean id="validatorDataSource" class="common.datasource.ValidatorDataFromFile">
-        <constructor-arg index="0">
-            <value>E:\\categoryworktemp\\SogouC.mini\\Sample\\C000007</value>
-        </constructor-arg>
+        
       </bean>
+      
+      <bean id="statistics" class="common.bean.Statistics"></bean>
 </beans>

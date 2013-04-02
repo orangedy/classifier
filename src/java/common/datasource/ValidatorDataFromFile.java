@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import common.bean.Document;
+import common.util.ConfigHelper;
 import common.util.FileUtil;
 
 /**
@@ -63,6 +64,10 @@ public class ValidatorDataFromFile implements ValidatorDataSource {
 	public ValidatorDataFromFile(String validateDataDir) {
 		this.validateDataDir = validateDataDir;
 	}
+	
+	public ValidatorDataFromFile() {
+		
+	}
 
 	/*
 	 * 该类实例化后，需要调用init方法进行初始化，否则会出错 初始化读取validateDateDir下所有以.txt结尾的文件列表
@@ -72,6 +77,7 @@ public class ValidatorDataFromFile implements ValidatorDataSource {
 	@Override
 	public boolean init() {
 		boolean result = true;
+		this.validateDataDir = ConfigHelper.getConfig().getEvalPath();
 		File root = new File(this.validateDataDir);
 		if (root.isDirectory()) {
 			this.documentsPath = new ArrayList<String>();
@@ -128,7 +134,7 @@ public class ValidatorDataFromFile implements ValidatorDataSource {
 					String filePath = this.documentsPath.remove(0);
 					File file = new File(filePath);
 					try {
-						String content = FileUtil.readFile(file);
+						String content = FileUtil.readFile(file, "gb2312");
 						Document document = new Document(content);
 						this.documentCache.add(document);
 					} catch (IOException e) {

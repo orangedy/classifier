@@ -7,5 +7,5 @@ public abstract class Processor {
 	
 	public abstract void process(Document document);
 	
-	public abstract void init(AbstractTrainer train);
+	public abstract void init();
 }

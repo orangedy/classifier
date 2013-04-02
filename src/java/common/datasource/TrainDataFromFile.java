@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import common.bean.CategoryBean;
 import common.bean.Document;
+import common.util.ConfigHelper;
 import common.util.FileUtil;
 
 /**
@@ -33,6 +34,10 @@ public class TrainDataFromFile implements TrainDataSource {
 
 	private String trainDataDir;
 
+	public void setTrainDataDir(String trainDataDir) {
+		this.trainDataDir = trainDataDir;
+	}
+
 	private List<CategoryBean> categorys;
 
 	private List<Document> documents;
@@ -43,11 +48,15 @@ public class TrainDataFromFile implements TrainDataSource {
 
 	public TrainDataFromFile(String trainDataDir) {
 		this.trainDataDir = trainDataDir;
-		// init();
+	}
+	
+	public TrainDataFromFile() {
+		
 	}
 
 	public boolean init() {
 		boolean result = true;
+		this.trainDataDir = ConfigHelper.getConfig().getTrainPath();
 		File trainRoot = new File(this.trainDataDir);
 		if (trainRoot.isDirectory()) {
 			String[] categoryNames = trainRoot.list();
@@ -64,7 +73,7 @@ public class TrainDataFromFile implements TrainDataSource {
 					if (file.exists()) {
 						String content;
 						try {
-							content = FileUtil.readFile(file);
+							content = FileUtil.readFile(file, "gb2312");
 							Document document = new Document(content, category);
 							this.documents.add(document);
 							sum++;

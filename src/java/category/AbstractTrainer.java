@@ -11,9 +11,11 @@ import org.apache.log4j.Logger;
 
 import common.bean.CategoryBean;
 import common.bean.Document;
+import common.bean.Statistics;
 import common.bean.TermInfo;
 import common.datasource.TrainDataSource;
 import common.feature.ITermSelector;
+import common.util.ConfigHelper;
 import common.util.FileUtil;
 
 import category.processor.DocumentToVectorProcessor;
@@ -76,17 +78,30 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 	}
 
 	/**
-	 * 词的统计信息，格式如下： 词 类别1 类别2 类别3... ‘训练’ 2 3 0 ......
+	 * 统计信息
 	 */
-	private Map<String, TermInfo> termsInfo = new HashMap<String, TermInfo>();
+	private Statistics statistics;
 
-	public Map<String, TermInfo> getTermsInfo() {
-		return termsInfo;
+	public Statistics getStatistics() {
+		return statistics;
 	}
 
-	public void setTermsInfo(Map<String, TermInfo> termsInfo) {
-		this.termsInfo = termsInfo;
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
 	}
+
+//	/**
+//	 * 词的统计信息，格式如下： 词 类别1 类别2 类别3... ‘训练’ 2 3 0 ......
+//	 */
+//	private Map<String, TermInfo> termsInfo = new HashMap<String, TermInfo>();
+//
+//	public Map<String, TermInfo> getTermsInfo() {
+//		return termsInfo;
+//	}
+//
+//	public void setTermsInfo(Map<String, TermInfo> termsInfo) {
+//		this.termsInfo = termsInfo;
+//	}
 
 	/**
 	 * 特征选择算法 默认实现CHI
@@ -114,37 +129,73 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 		this.documentToVector = documentToVector;
 	}
 
-	public void train() {
-		if (initCategorys()) {
-			initProcessor();
-			while (this.trainDataSource.haveNext()) {
-				Document document = this.trainDataSource.getNextDocument();
-				this.documents.add(document);
-				for (Processor processor : this.processors) {
-					processor.process(document);
-				}
-			}
-			// 特征提取
-			int[] documentNumEachCategory = new int[this.categorys.size()];
-			for (int i = 0; i < documentNumEachCategory.length; i++) {
-				documentNumEachCategory[i] = this.categorys.get(i).getDocumentNum();
-			}
-			Map<String, Integer> selectTerms = this.termSelector.selectTerms(this.termsInfo, documentNumEachCategory);
-			// test
-			for (String term : selectTerms.keySet()) {
-				log.debug("term:" + term);
-			}
-			this.termsInfo = null;
-			this.documentToVector.setSelectTerms(selectTerms);
-			for (Document document : this.documents) {
-				this.documentToVector.process(document);
-			}
-			// 训练
-			doTrain();
-			saveCategoryInfo();
-			saveSelectTerms(selectTerms);
+	public void init() {
+		this.trainDataSource.init();
+		this.categorys = this.trainDataSource.getCategorys();
+		this.statistics.setDocumentNumEachCategory(new int[this.categorys.size()]);
+		for (CategoryBean category : this.categorys) {
+			int id = category.getCategoryId();
+			this.statistics.getDocumentNumEachCategory()[id] = category.getDocumentNum();
 		}
+		initProcessor();
 	}
+
+	public void train() {
+		init();
+		while (this.trainDataSource.haveNext()) {
+			Document document = this.trainDataSource.getNextDocument();
+			this.documents.add(document);
+			for (Processor processor : this.processors) {
+				processor.process(document);
+			}
+		}
+		// 特征提取
+		int[] documentNumEachCategory = this.statistics.getDocumentNumEachCategory();
+		Map<String, Integer> selectTerms = this.termSelector.selectTerms(this.statistics.getTermEachCategory(),
+				documentNumEachCategory);
+		this.statistics.setSelectTerms(selectTerms);
+		this.documentToVector.init();
+		for (Document document : this.documents) {
+			this.documentToVector.process(document);
+		}
+		// 训练
+		doTrain();
+		saveCategoryInfo();
+		saveSelectTerms(selectTerms);
+
+	}
+
+//	public void train() {
+//		if (initCategorys()) {
+//			initProcessor();
+//			while (this.trainDataSource.haveNext()) {
+//				Document document = this.trainDataSource.getNextDocument();
+//				this.documents.add(document);
+//				for (Processor processor : this.processors) {
+//					processor.process(document);
+//				}
+//			}
+//			// 特征提取
+//			int[] documentNumEachCategory = new int[this.categorys.size()];
+//			for (int i = 0; i < documentNumEachCategory.length; i++) {
+//				documentNumEachCategory[i] = this.categorys.get(i).getDocumentNum();
+//			}
+//			Map<String, Integer> selectTerms = this.termSelector.selectTerms(this.termsInfo, documentNumEachCategory);
+//			// test
+//			for (String term : selectTerms.keySet()) {
+//				log.debug("term:" + term);
+//			}
+//			this.termsInfo = null;
+//			this.documentToVector.setSelectTerms(selectTerms);
+//			for (Document document : this.documents) {
+//				this.documentToVector.process(document);
+//			}
+//			// 训练
+//			doTrain();
+//			saveCategoryInfo();
+//			saveSelectTerms(selectTerms);
+//		}
+//	}
 
 	private boolean initCategorys() {
 		boolean result = true;
@@ -160,15 +211,15 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 
 	private void initProcessor() {
 		for (Processor processor : this.processors) {
-			processor.init(this);
+			processor.init();
 		}
 	}
-	
-	public void saveCategoryInfo(){
-		String path = "result/category.txt";
+
+	public void saveCategoryInfo() {
+		String path = ConfigHelper.getConfig().getCategoryPath();
 		File file = new File(path);
 		StringBuilder buffer = new StringBuilder();
-		for(CategoryBean category : this.categorys){
+		for (CategoryBean category : this.categorys) {
 			buffer.append(category.getCategoryId() + " " + category.getCategoryName() + "\n");
 		}
 		try {
@@ -177,12 +228,12 @@ public abstract class AbstractTrainer extends AbstractClassifier {
 			e.printStackTrace();
 		}
 	}
-	
-	public void saveSelectTerms(Map<String, Integer> selectTerms){
-		String path = "result/terms.txt";
+
+	public void saveSelectTerms(Map<String, Integer> selectTerms) {
+		String path = ConfigHelper.getConfig().getTermsPath();
 		File file = new File(path);
 		StringBuilder buffer = new StringBuilder();
-		for(Map.Entry<String, Integer> entry : selectTerms.entrySet()){
+		for (Map.Entry<String, Integer> entry : selectTerms.entrySet()) {
 			buffer.append(entry.getKey() + " " + entry.getValue() + "\n");
 		}
 		try {

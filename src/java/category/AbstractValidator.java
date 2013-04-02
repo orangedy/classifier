@@ -14,6 +14,7 @@ import category.processor.Processor;
 import common.bean.CategoryBean;
 import common.bean.Document;
 import common.datasource.ValidatorDataSource;
+import common.util.ConfigHelper;
 import common.util.FileUtil;
 
 public abstract class AbstractValidator extends AbstractClassifier{
@@ -105,10 +106,11 @@ public abstract class AbstractValidator extends AbstractClassifier{
 		initModel();
 		this.vectorCreator.setSelectTerms(this.termInfo);
 		this.resultInfo = new HashMap<Double, Integer>();
+		this.tokenizer.init();
 	}
 	
 	private void initCategoryInfo(){
-		String path = "result/category.txt";
+		String path = ConfigHelper.getConfig().getCategoryPath();
 		File file = new File(path);
 		try {
 			List<String> content = FileUtil.readFileByLine(file);
@@ -125,7 +127,7 @@ public abstract class AbstractValidator extends AbstractClassifier{
 	}
 	
 	private void initTermSelectorInfo(){
-		String path = "result/terms.txt";
+		String path = ConfigHelper.getConfig().getTermsPath();
 		File file = new File(path);
 		this.termInfo = new HashMap<String, Integer>();
 		try {

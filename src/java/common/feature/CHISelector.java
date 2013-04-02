@@ -260,7 +260,7 @@ public class CHISelector implements ITermSelector{
 						}
 					}
 				});
-		for(int i = 0; i < N; i++){
+		for(int i = 0; i < N && i < tempList.size(); i++){
 			if(tempList.get(i).getValue().getWeight() > this.minCHIValue){
 				results.add(tempList.get(i).getKey());
 			}else{

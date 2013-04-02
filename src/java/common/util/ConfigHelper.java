@@ -10,33 +10,27 @@ import org.apache.log4j.Logger;
 
 
 public class ConfigHelper {
-	static ConfigHelper config = null;
+	private static ConfigHelper config = null;
 	
 	static final Logger logger = Logger.getLogger(ConfigHelper.class);
 
-	String driver = "";
-	
-	// 默认数据库的地址帐号、密码
-	String url = "";
-	String user = "";
-	String password = "";
-	
-	// 分类器名称
-	String category = "";
-	
-	// 单分类(binary)/多分类(multi)
-	String type = "";
-	
-	String multiIds = "";
-	
 	// 操作-训练
-	boolean isTrain = false;
-	String trainPath = "";
+	private boolean isTrain = false;
+	private String trainPath;
 	
 	// 操作-测试
-	boolean isEval = false;
-	String evalPath = "";
+	private boolean isEval = false;
+	private String evalPath;
 	
+	private String modelPath;
+	
+	private String termsPath;
+	
+	private String categoryPath;
+	
+	private String stopwordPath;
+	
+	private String ignoreTypePath;
 	
 	public static ConfigHelper getConfig(){
 		if(config == null){
@@ -45,36 +39,16 @@ public class ConfigHelper {
 		return config;
 	}
 
-	ConfigHelper() {
+	private ConfigHelper() {
 		
 		Properties prop = new Properties();
 		try {
-		    //String path = FileUtil.getClasspath() ;
 	        try {
-	        	System.out.println(System.getProperty("user.dir"));
-	        	
-	            InputStreamReader is = new InputStreamReader(new FileInputStream(new File("./bin/config.txt")),"utf-8");
+	            InputStreamReader is = new InputStreamReader(new FileInputStream(new File("config.txt")),"utf-8");
 	            prop.load(is);
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-			this.driver = prop.getProperty("driver", "");
-			this.url = prop.getProperty("url", "");
-			this.user = prop.getProperty("user", "");
-			this.password = prop.getProperty("password", "");
-			
-			category = prop.getProperty("category", "");
-			if(category.length() == 0 ){
-                logger.error("分类器名称为空");
-            }
-			
-		    type = prop.getProperty("type", "");
-		    if(type.length() == 0 ){
-		        logger.error("分类器类型为空");
-		    }
-		    if(!"binary".equals(type) && !"multi".equals(type)){
-		        logger.error("分类器类型type 取值 为binary 或 multi");
-		    }
 		    
 		    isTrain = Boolean.parseBoolean(prop.getProperty("train", "false"));
 		    trainPath = prop.getProperty("train_path", "");
@@ -98,67 +72,52 @@ public class ConfigHelper {
 		        logger.error("训练、测试均未开启");
 		    }
 		    
-		    multiIds = prop.getProperty("multi_ids", "");
-			
+		    this.modelPath = prop.getProperty("model_path", "result/model.txt");
+		    this.categoryPath = prop.getProperty("category_path", "result/category.txt");
+		    this.termsPath = prop.getProperty("terms_path", "result/terms.txt");
+		    
+		    this.ignoreTypePath = prop.getProperty("ignoretype_path", "/ignoretype.txt");
+		    this.stopwordPath = prop.getProperty("stopword_path", "/stopword.txt");
+		    
 		} catch (Exception e) {
 			logger.error("config.txt error#"+e.toString());
 		} 
-		
-		
-
 	}
 
-
-	public String getDriver() {
-		return driver;
+	public boolean isTrain() {
+		return isTrain;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getTrainPath() {
+		return trainPath;
 	}
 
-	public String getUser() {
-		return user;
+	public boolean isEval() {
+		return isEval;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getEvalPath() {
+		return evalPath;
 	}
-	
-    public String getCategory() {
-        return category;
-    }
 
-    
-    public String getType() {
-        return type;
-    }
+	public String getModelPath() {
+		return modelPath;
+	}
 
-    
-    public boolean isTrain() {
-        return isTrain;
-    }
+	public String getTermsPath() {
+		return termsPath;
+	}
 
-    
-    public String getTrainPath() {
-        return trainPath;
-    }
+	public String getCategoryPath() {
+		return categoryPath;
+	}
 
-    
-    public boolean isEval() {
-        return isEval;
-    }
+	public String getStopwordPath() {
+		return stopwordPath;
+	}
 
-    
-    public String getEvalPath() {
-        return evalPath;
-    }
+	public String getIgnoreTypePath() {
+		return ignoreTypePath;
+	}
 
-    
-    public String getMultiIds() {
-        return multiIds;
-    }
-
-
-	
 }

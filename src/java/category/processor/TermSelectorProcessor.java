@@ -9,11 +9,25 @@ import category.AbstractTrainer;
 
 import common.bean.CategoryBean;
 import common.bean.Document;
+import common.bean.Statistics;
 import common.bean.Term;
 import common.bean.TermInfo;
 import common.feature.ITermSelector;
 
 public class TermSelectorProcessor extends Processor{
+
+	/**
+	 * 统计信息
+	 */
+	private Statistics statistics;
+	
+	public Statistics getStatistics() {
+		return statistics;
+	}
+
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
+	}
 
 	private Map<String, TermInfo> termInfos;
 	
@@ -30,19 +44,9 @@ public class TermSelectorProcessor extends Processor{
 		this.categoryNum = categoryNum;
 	}
 	
-//	private AbstractTrainer trainer;
-//	
-//	public AbstractTrainer getTrainer() {
-//		return trainer;
-//	}
-//
-//	public void setTrainer(AbstractTrainer trainer) {
-//		this.trainer = trainer;
-//	}
-	
-	public void init(AbstractTrainer trainer){
-		this.categoryNum = trainer.getCategorys().size();
-		this.termInfos = trainer.getTermsInfo();
+	public void init(){
+		this.categoryNum = this.statistics.getDocumentNumEachCategory().length;
+		this.termInfos = this.statistics.getTermEachCategory();
 	}
 
 	@Override
@@ -59,6 +63,11 @@ public class TermSelectorProcessor extends Processor{
 				termInfo.getDocumentFrequency()[categoryId]++;
 			}
 		}
+	}
+	
+	public void destory(){
+		this.termInfos = null;
+		this.statistics = null;
 	}
 
 	public static void main(String[] args) {

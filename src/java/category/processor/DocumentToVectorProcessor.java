@@ -3,20 +3,39 @@ package category.processor;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import category.AbstractTrainer;
 
 import libsvm.svm_node;
 
 import common.bean.Document;
+import common.bean.Statistics;
 import common.bean.Term;
 
-public class DocumentToVectorProcessor extends Processor{
+public class DocumentToVectorProcessor extends Processor implements ApplicationContextAware{
+	
+	ApplicationContext appCtx;
+    public void setApplicationContext(ApplicationContext appCtx) {
+        this.appCtx = appCtx;
+    }
+
+	/**
+	 * 统计信息类
+	 */
+	private Statistics statistics;
+	
+	public void setStatistics(Statistics statistics) {
+		this.statistics = statistics;
+	}
+
 
 	/**
 	 * 选择的特征词
 	 */
 	private Map<String, Integer> selectTerms;
-	
 	
 	public Map<String, Integer> getSelectTerms() {
 		return selectTerms;
@@ -40,9 +59,12 @@ public class DocumentToVectorProcessor extends Processor{
 	}
 
 
-	@Override
-	public void init(AbstractTrainer train) {
-		
+	public void init() {
+		this.selectTerms = this.statistics.getSelectTerms();
 	}
 
+	public void destory(){
+		this.selectTerms = null;
+		this.statistics = null;
+	}
 }
